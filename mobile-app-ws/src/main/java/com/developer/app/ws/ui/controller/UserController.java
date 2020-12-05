@@ -12,9 +12,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.developer.app.ws.exceptions.UserServiceException;
 import com.developer.app.ws.service.UserService;
 import com.developer.app.ws.shared.dto.UserDto;
 import com.developer.app.ws.ui.model.request.UserDetailsRequestModel;
+import com.developer.app.ws.ui.model.response.ErrorMessages;
 import com.developer.app.ws.ui.model.response.UserRest;
 
 @RestController
@@ -25,31 +27,25 @@ public class UserController {
 	UserService userService;
 	
 	@GetMapping(path = "/{id}",
-			produces = {MediaType.APPLICATION_JSON_VALUE,
-			MediaType.APPLICATION_XML_VALUE },
-			consumes = {MediaType.APPLICATION_JSON_VALUE,
-					MediaType.APPLICATION_XML_VALUE })
+			produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
+			consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public UserRest getUser(@PathVariable String id) {
-		
 		UserRest returnValue = new UserRest();
-		
 		UserDto userDto = userService.getUserById(id);
 		BeanUtils.copyProperties(userDto, returnValue);
-		
 		return returnValue;
 	}
 	
 	@PostMapping
-	public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) {
+	public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws Exception {
+		// TEST
+		if(userDetails.getFirstName().isEmpty()) throw new UserServiceException(ErrorMessages.MISSING_REQUIRED_FIELD.getErrorMessage());
 		
 		UserRest returnValue = new UserRest();
-		
 		UserDto userDto = new UserDto();
 		BeanUtils.copyProperties(userDetails, userDto);
-		
 		UserDto createdUser = userService.createUser(userDto);
 		BeanUtils.copyProperties(createdUser, returnValue);
-		
 		return returnValue;
 	}
 	
