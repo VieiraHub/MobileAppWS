@@ -12,7 +12,7 @@ public class UserDto implements Serializable{
 	private String email;
 	private String password;
 	private String encryptedPassword;
-	private String emailVverificationToken;
+	private String emailVerificationToken;
 	private Boolean emailVerificationStatus = false;
 	
 	
@@ -72,12 +72,12 @@ public class UserDto implements Serializable{
 		this.encryptedPassword = encryptedPassword;
 	}
 	
-	public String getEmailVverificationToken() {
-		return emailVverificationToken;
+	public String getEmailVerificationToken() {
+		return emailVerificationToken;
 	}
 	
-	public void setEmailVverificationToken(String emailVverificationToken) {
-		this.emailVverificationToken = emailVverificationToken;
+	public void setEmailVerificationToken(String emailVverificationToken) {
+		this.emailVerificationToken = emailVverificationToken;
 	}
 	
 	public Boolean getEmailVerificationStatus() {
