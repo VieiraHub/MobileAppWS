@@ -1,6 +1,6 @@
 package com.developer.app.ws.ui.model.request;
 
-public class AddresseRequestModel {
+public class AddressRequestModel {
 
 	private String city;
 	private String country;
