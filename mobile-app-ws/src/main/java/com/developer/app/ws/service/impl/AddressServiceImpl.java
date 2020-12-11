@@ -38,4 +38,14 @@ public class AddressServiceImpl implements AddressService {
 		}
 		return returnValue;
 	}
+
+	@Override
+	public AddressDto getAddress(String addressId) {
+		AddressDto returnValue = new AddressDto();
+		AddressEntity addressEntity = addressRepository.findByAddressId(addressId);
+		if (addressEntity != null ) {
+			BeanUtils.copyProperties(addressEntity, returnValue);
+		}
+		return returnValue;
+	}
 }
