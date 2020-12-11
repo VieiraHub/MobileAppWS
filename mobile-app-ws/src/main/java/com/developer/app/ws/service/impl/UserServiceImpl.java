@@ -38,7 +38,6 @@ public class UserServiceImpl implements UserService {
 	
 	@Override
 	public UserDto createUser(UserDto user) {
-		
 		if(userRepository.findByEmail(user.getEmail()) != null)
 			throw new RuntimeException("Record already exists");
 				
@@ -59,6 +58,8 @@ public class UserServiceImpl implements UserService {
 		UserEntity storedUserDetails = userRepository.save(userEntity);	
 		
 		UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
+//		Aqui o beans da erro porque tenho as addresses que tem userdetails etc
+//		BeanUtils.copyProperties(storedUserDetails, returnValue);
 		return returnValue;
 	}
 	
@@ -94,7 +95,6 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDto updateUser(String userId, UserDto user) {
-		UserDto returnValue = new UserDto();
 		UserEntity userEntity = userRepository.findByUserId(userId);
 		if(userEntity == null)
 			throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
@@ -103,7 +103,9 @@ public class UserServiceImpl implements UserService {
 		userEntity.setLastName(user.getLastName());
 		
 		UserEntity updatedUserDetails = userRepository.save(userEntity);
-		BeanUtils.copyProperties(updatedUserDetails, returnValue);	
+//		UserDto returnValue = new ModelMapper().map(updatedUserDetails, UserDto.class);	
+		UserDto returnValue = new UserDto();
+		BeanUtils.copyProperties(updatedUserDetails, returnValue);
 		return returnValue;
 	}
 

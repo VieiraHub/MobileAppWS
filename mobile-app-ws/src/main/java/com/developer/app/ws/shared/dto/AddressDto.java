@@ -1,7 +1,10 @@
 package com.developer.app.ws.shared.dto;
 
-public class AddressDto {
+import java.io.Serializable;
 
+public class AddressDto implements Serializable {
+
+	private static final long serialVersionUID = 1758475121586681136L;
 	private long id;
 	private String addressId;
 	private String city;
