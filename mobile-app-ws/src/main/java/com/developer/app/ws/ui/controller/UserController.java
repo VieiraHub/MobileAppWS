@@ -136,10 +136,10 @@ public class UserController {
 				.slash(userId)
 				.slash("addresses")
 				.withRel("addresses");
-		Link selfLink = WebMvcLinkBuilder.linkTo(WebMvcLinkBuilder.methodOn(UserController.class).getUserAddress(userId, addressId))
-				//.slash(userId)
-				//.slash("addresses")
-				//.slash(addressId)
+		Link selfLink = WebMvcLinkBuilder.linkTo(UserController.class)
+				.slash(userId)
+				.slash("addresses")
+				.slash(addressId)
 				.withSelfRel();
 		
 		returnValue.add(userLink);
