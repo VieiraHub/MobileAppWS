@@ -19,6 +19,7 @@ import com.developer.app.ws.exceptions.UserServiceException;
 import com.developer.app.ws.io.entity.UserEntity;
 import com.developer.app.ws.io.repositories.UserRepository;
 import com.developer.app.ws.service.UserService;
+import com.developer.app.ws.shared.AmazonSES;
 import com.developer.app.ws.shared.Utils;
 import com.developer.app.ws.shared.dto.AddressDto;
 import com.developer.app.ws.shared.dto.UserDto;
@@ -64,6 +65,10 @@ public class UserServiceImpl implements UserService {
 		UserDto returnValue = modelMapper.map(storedUserDetails, UserDto.class);
 //		Aqui o beans da erro porque tenho as addresses que tem userdetails etc
 //		BeanUtils.copyProperties(storedUserDetails, returnValue);
+		
+		// Send an email message to user to verify their email address
+		new AmazonSES().verifyEmail(returnValue);
+				
 		return returnValue;
 	}
 	
