@@ -196,4 +196,37 @@ public class UserServiceImpl implements UserService {
 		return returnValue;
 	}
 
+	@Override
+	public boolean resetPassword(String token, String password) {
+		boolean returnValue = false;
+		
+		if(Utils.hasTokenExpired(token)) {
+			return returnValue;
+		}
+		
+		PasswordResetTokenEntity passwordResetTokenEntity = passwordResetTokenRepository.findByToken(token);
+		
+		if(passwordResetTokenEntity == null) {
+			return returnValue;
+		}
+		
+		// Prepare new Password
+		String encondedPassword = bCryptPasswordEncoder.encode(password);
+		
+		// Update User Password in db
+		UserEntity userEntity = passwordResetTokenEntity.getUserDetails();
+		userEntity.setEncryptedPassword(encondedPassword);
+		UserEntity savedUSerEntity = userRepository.save(userEntity);
+		
+		// Verify if password was saved successfully
+		if(savedUSerEntity != null && savedUSerEntity.getEncryptedPassword().equalsIgnoreCase(encondedPassword)) {
+			returnValue = true;
+		}
+		
+		// Remove Password reset token from db
+		passwordResetTokenRepository.delete(passwordResetTokenEntity);
+		
+		return returnValue;
+	}
+
 }
