@@ -25,7 +25,7 @@ public class AmazonSES {
 	final String HTMLBODY = "<h1>Please verify your email address</h1>"
 			+ "<p>Thank you for registering with our mobile app. To complete registration process and be able to log in,"
 			+ " click on the following link: "
-			+ "<a href='http://ec2-18-134-152-167.eu-west-2.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue'>"
+			+ "<a href='http://localhost:8080/verification-service/email-verification.html?token=$tokenValue'>"
 			+ "Final step to complete your registration" + "</a><br/><br/>"
 			+ "Thank you! And we are waiting for you inside!";
 
@@ -33,7 +33,7 @@ public class AmazonSES {
 	final String TEXTBODY = "Please verify your email address. "
 			+ "Thank you for registering with our mobile app. To complete registration process and be able to log in,"
 			+ " open then the following URL in your browser window: "
-			+ " http://ec2-18-134-152-167.eu-west-2.compute.amazonaws.com:8080/verification-service/email-verification.html?token=$tokenValue"
+			+ " http://localhost:8080/verification-service/email-verification.html?token=$tokenValue"
 			+ " Thank you! And we are waiting for you inside!";
 
 	
@@ -42,7 +42,7 @@ public class AmazonSES {
 			+ "<p>Hi, $firstName!</p> "
 			+ "<p>Someone has requested to reset your password with our project. If it were not you, please ignore it."
 			+ " otherwise please click on the link below to set a new password: "
-			+ "<a href='http://ec2-18-134-152-167.eu-west-2.compute.amazonaws.com:8080/verification-service/password-reset.html?token=$tokenValue'>"
+			+ "<a href='http://localhost:8080/verification-service/password-reset.html?token=$tokenValue'>"
 			+ " Click this link to Reset Password" 
 			+ "</a><br/><br/>" 
 			+ "Thank you!";
@@ -52,16 +52,12 @@ public class AmazonSES {
 			+ "Hi, $firstName! "
 			+ "Someone has requested to reset your password with our project. If it were not you, please ignore it."
 			+ " otherwise please open the link below in your browser window to set a new password:"
-			+ "http://ec2-18-134-152-167.eu-west-2.compute.amazonaws.com:8080/verification-service/password-reset.html?token=$tokenValue" 
+			+ "http://localhost:8080/verification-service/password-reset.html?token=$tokenValue" 
 			+ " Thank you!";
 
 
 	public void verifyEmail(UserDto userDto) {
-//		AWSCredentialsProvider provider = new DefaultAWSCredentialsProviderChain();
-//		AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard()
-//				.withCredentials(provider)
-//				.build();
-
+		
 		AmazonSimpleEmailService client = AmazonSimpleEmailServiceClientBuilder.standard().withRegion(Regions.EU_WEST_2)
 				.build();
 
@@ -89,9 +85,9 @@ public class AmazonSES {
 				.build();
 		
 		String htmlBodyWithToken = PASSWORD_RESET_HTMLBODY.replace("$tokenValue", token);
-		htmlBodyWithToken.replace("$firstName", firstName);
+		htmlBodyWithToken = htmlBodyWithToken.replace("$firstName", firstName);
 		String textBodyWithToken = PASSWORD_RESET_TEXTBODY.replace("$tokenValue", token);
-		textBodyWithToken.replace("$firstName", firstName);
+		textBodyWithToken = textBodyWithToken.replace("$firstName", firstName);
 		
 		SendEmailRequest request = new SendEmailRequest()
 				.withDestination(new Destination().withToAddresses(email))
