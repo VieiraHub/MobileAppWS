@@ -42,10 +42,13 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	PasswordResetTokenRepository passwordResetTokenRepository;
 	
+	@Autowired
+	AmazonSES amazonSES;
+	
 	@Override
 	public UserDto createUser(UserDto user) {
 		if(userRepository.findByEmail(user.getEmail()) != null)
-			throw new RuntimeException("Record already exists");
+			throw new UserServiceException("Record already exists");
 				
 		for(int i = 0; i < user.getAddresses().size(); i++) {
 			AddressDto address = user.getAddresses().get(i);
@@ -72,7 +75,7 @@ public class UserServiceImpl implements UserService {
 //		BeanUtils.copyProperties(storedUserDetails, returnValue);
 		
 		// Send an email message to user to verify their email address
-		new AmazonSES().verifyEmail(returnValue);
+		amazonSES.verifyEmail(returnValue);
 				
 		return returnValue;
 	}

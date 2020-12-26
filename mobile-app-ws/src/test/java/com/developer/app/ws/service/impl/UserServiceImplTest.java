@@ -16,15 +16,18 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.developer.app.ws.exceptions.UserServiceException;
 import com.developer.app.ws.io.entity.AddressEntity;
 import com.developer.app.ws.io.entity.UserEntity;
 import com.developer.app.ws.io.repositories.UserRepository;
+import com.developer.app.ws.shared.AmazonSES;
 import com.developer.app.ws.shared.Utils;
 import com.developer.app.ws.shared.dto.AddressDto;
 import com.developer.app.ws.shared.dto.UserDto;
@@ -43,9 +46,14 @@ class UserServiceImplTest {
 	@Mock
 	BCryptPasswordEncoder bCryptPasswordEncoder; 
 	
+	@Mock
+	AmazonSES amazonSES;
+	
 	UserEntity userEntity;
+	UserDto userDto;
 	String userId = "UserId";
 	String encryptedPassword = "EncryptedPassword";
+	String email = "test@test.com";
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -57,17 +65,22 @@ class UserServiceImplTest {
 		userEntity.setLastName("LastName");
 		userEntity.setUserId(userId);
 		userEntity.setEncryptedPassword(encryptedPassword);
-		userEntity.setEmail("test@test.com");
+		userEntity.setEmail(email);
 		userEntity.setEmailVerificationToken("VerificationToken");
 		userEntity.setAddresses(getAddressesEntity());
+		
+		userDto = new UserDto();
+		userDto.setAddresses(getAddressesDto());
+		userDto.setFirstName("FirstName");
+		userDto.setLastName("LastName");
+		userDto.setPassword("Password");
+		userDto.setEmail(email);
 	}
 
 	@Test
 	final void testGetUser() {		
-		when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
-		
-		UserDto userDto = userService.getUser("test@test.com");
-		
+		when(userRepository.findByEmail(anyString())).thenReturn(userEntity);	
+		UserDto userDto = userService.getUser(email);
 		assertNotNull(userDto);
 		assertEquals("FirstName", userDto.getFirstName());
 	}
@@ -75,9 +88,16 @@ class UserServiceImplTest {
 	@Test
 	final void testGetUser_UsernameNotFoundException() {
 		when(userRepository.findByEmail(anyString())).thenReturn(null);
-		
 		assertThrows(UsernameNotFoundException.class, () -> {
-			userService.getUser("test@test.com");	
+			userService.getUser(email);	
+		});
+	}
+	
+	@Test
+	final void testCreateUser_CreateUserServiceException() {
+		when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
+		assertThrows(UserServiceException.class, () -> {
+			userService.createUser(userDto);	
 		});
 	}
 
@@ -88,13 +108,7 @@ class UserServiceImplTest {
 		when(utils.generateUserId(anyInt())).thenReturn(userId);
 		when(bCryptPasswordEncoder.encode(anyString())).thenReturn(encryptedPassword);
 		when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
-		
-		UserDto userDto = new UserDto();
-		userDto.setAddresses(getAddressesDto());
-		userDto.setFirstName("FirstName");
-		userDto.setLastName("LastName");
-		userDto.setPassword("Password");
-		userDto.setEmail("test@test.com");
+		Mockito.doNothing().when(amazonSES).verifyEmail(any(UserDto.class));
 		
 		UserDto storedUserDetails = userService.createUser(userDto);
 		assertNotNull(storedUserDetails);
