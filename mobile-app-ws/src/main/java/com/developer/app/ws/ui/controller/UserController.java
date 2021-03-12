@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -37,6 +38,7 @@ import com.developer.app.ws.ui.model.response.UserRest;
 
 @RestController
 @RequestMapping("users") // http://localhost:8080/users
+//@CrossOrigin("*") // * PERMISSION TO ALL  IF ("http://localhost:8084") SPECIFIED PERMISSION
 public class UserController {
 
 	@Autowired
@@ -49,6 +51,7 @@ public class UserController {
 	@GetMapping(path = "/{id}", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
+	//@CrossOrigin("*")
 	public UserRest getUser(@PathVariable String id) {
 		UserDto userDto = userService.getUserById(id);
 		UserRest returnValue = new ModelMapper().map(userDto, UserRest.class);
