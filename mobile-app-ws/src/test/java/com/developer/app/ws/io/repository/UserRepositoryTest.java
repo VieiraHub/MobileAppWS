@@ -27,8 +27,89 @@ class UserRepositoryTest {
 	@Autowired
 	UserRepository userRepository;
 	
+	static boolean recordsCreated = false;
+	
 	@BeforeEach
 	void setUp() throws Exception {
+		if(!recordsCreated) createRecords();	
+	}
+
+	@Test
+	final void testGetVerifiedUsers() {
+		Pageable pageableRequest = PageRequest.of(0, 2);
+		Page<UserEntity> pages = userRepository.findAllUsersWithConfirmedEmailAddress(pageableRequest);
+		assertNotNull(pages);
+		
+		List<UserEntity> userEntities = pages.getContent();
+		assertNotNull(userEntities);
+		assertTrue(userEntities.size() == 1);
+	}
+
+	@Test
+	final void testFindUserByFirstName() {
+		String firstName = "Bruno";
+		List<UserEntity> users = userRepository.findUserByFirstName(firstName);
+		assertNotNull(users);
+		assertTrue(users.size() == 2);
+		
+		UserEntity user = users.get(0);
+		assertTrue(user.getFirstName().equals(firstName));
+	}
+	
+	@Test
+	final void testFindUserBylastName() {
+		String lastName = "Vieira";
+		List<UserEntity> users = userRepository.findUserByLastName(lastName);
+		assertNotNull(users);
+		assertTrue(users.size() == 2);
+		
+		UserEntity user = users.get(0);
+		assertTrue(user.getLastName().equals(lastName));
+	}
+	
+	@Test
+	final void testFindUserByKeyword() {
+		String keyword = "Vie";
+		List<UserEntity> users = userRepository.findUserByKeyword(keyword);
+		assertNotNull(users);
+		assertTrue(users.size() == 2);
+		
+		UserEntity user = users.get(0);
+		assertTrue(user.getLastName().contains(keyword) || user.getFirstName().contains(keyword));
+	}
+	
+	@Test
+	final void testFindUserFirstNameAndLastNameByKeyword() {
+		String keyword = "Vie";
+		List<Object[]> users = userRepository.findUserFirstNameAndLastNameByKeyword(keyword);
+		assertNotNull(users);
+		assertTrue(users.size() == 2);
+		
+		Object[] user = users.get(0);
+		assertTrue(user.length == 2);
+		
+		String userFirstName = String.valueOf(user[0]);
+		String userLastName = String.valueOf(user[1]);
+		
+		assertNotNull(userFirstName);
+		assertNotNull(userLastName);
+		
+		System.out.println("First name = " + userFirstName);
+		System.out.println("Last name = " + userLastName);
+	}
+	
+	@Test
+	final void testUpdateUserEmailVerificationStatus() {
+		boolean newEmailVerificationStatus = false;
+		userRepository.updateUserEmailVerificationStatus(newEmailVerificationStatus, "userId1234");
+		
+		UserEntity storedUserDetails = userRepository.findByUserId("");
+		
+		boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
+		assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
+	}
+	
+	private void createRecords() {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setFirstName("Bruno");
 		userEntity.setLastName("Vieira");
@@ -50,17 +131,29 @@ class UserRepositoryTest {
 		userEntity.setAddresses(addresses);
 		
 		userRepository.save(userEntity);
-	}
-
-	@Test
-	void testGetVerifiedUsers() {
-		Pageable pageableRequest = PageRequest.of(0, 2);
-		Page<UserEntity> pages = userRepository.findAllUsersWithConfirmedEmailAddress(pageableRequest);
-		assertNotNull(pages);
 		
-		List<UserEntity> userEntities = pages.getContent();
-		assertNotNull(userEntities);
-		assertTrue(userEntities.size() == 1);
+		UserEntity userEntity2 = new UserEntity();
+		userEntity2.setFirstName("Bruno");
+		userEntity2.setLastName("Vieira");
+		userEntity2.setUserId("userId4321");
+		userEntity2.setEncryptedPassword("encryptedxxx");
+		userEntity2.setEmail("test1@test.com");
+		userEntity2.setEmailVerificationStatus(true);
+		
+		AddressEntity addressEntity2 = new AddressEntity();
+		addressEntity2.setType("shipping");
+		addressEntity2.setAddressId("addressId4321");
+		addressEntity2.setCity("Lisbon");
+		addressEntity2.setCountry("Portugal");
+		addressEntity2.setPostalCode("postal-code");
+		addressEntity2.setStreetName("Street Name Number door");
+		
+		List<AddressEntity> addresses2 = new ArrayList<>();
+		addresses2.add(addressEntity2);
+		userEntity2.setAddresses(addresses2);
+		
+		userRepository.save(userEntity2);
+		
+		recordsCreated = true;
 	}
-
 }
