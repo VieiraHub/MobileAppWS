@@ -33,12 +33,24 @@ public interface UserRepository extends PagingAndSortingRepository<UserEntity, L
 	@Query(value = "select * from Users u where first_name LIKE %:keyword% or last_name LIKE %:keyword%", nativeQuery = true)
 	List<UserEntity> findUserByKeyword(@Param("keyword") String keyword);
 	
-	@Query(value = "select u.fisrt_name, u.last_name from Users u where u.first_name LIKE %:keyword% or u.last_name LIKE %:keyword%", nativeQuery = true)
+	@Query(value = "select u.first_name, u.last_name from Users u where u.first_name LIKE %:keyword% or u.last_name LIKE %:keyword%", nativeQuery = true)
 	List<Object[]> findUserFirstNameAndLastNameByKeyword(@Param("keyword") String keyword);
 	
-	@Transactional
+	@Transactional //Transactional and Modifying should be on service methods!! 
 	@Modifying
-	@Query(value = "update users u set u.EMAIL_VERIFICATION_STATUS =: emailVerificationStatus where u.user_id =: userId", nativeQuery = true)
+	@Query(value = "update users u set u.EMAIL_VERIFICATION_STATUS =:emailVerificationStatus where u.user_id =:userId", nativeQuery = true)
 	void updateUserEmailVerificationStatus(@Param("emailVerificationStatus") boolean emailVerificationStatus,
+			@Param("userId") String userId);
+	
+	@Query("select user from UserEntity user where user.userId =:userId")
+	UserEntity findUserEntityByUserId(@Param("userId") String userId);
+	
+	@Query("select user.firstName, user.lastName from UserEntity user where user.userId =:userId")
+	List<Object[]> getUserEntityFullNameById(@Param("userId") String userId);
+	
+	@Modifying
+	@Transactional
+	@Query("UPDATE UserEntity u set u.emailVerificationStatus =:emailVerificationStatus where u.userId =:userId")
+	void updateUserEntityEmailVerificationStatus(@Param("emailVerificationStatus") boolean emailVerificationStatus, 
 			@Param("userId") String userId);
 }

@@ -28,6 +28,7 @@ class UserRepositoryTest {
 	UserRepository userRepository;
 	
 	static boolean recordsCreated = false;
+	private String userId = "userId1234";
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -100,10 +101,47 @@ class UserRepositoryTest {
 	
 	@Test
 	final void testUpdateUserEmailVerificationStatus() {
-		boolean newEmailVerificationStatus = false;
-		userRepository.updateUserEmailVerificationStatus(newEmailVerificationStatus, "userId1234");
+		boolean newEmailVerificationStatus = true;
+		userRepository.updateUserEmailVerificationStatus(newEmailVerificationStatus, userId);
 		
-		UserEntity storedUserDetails = userRepository.findByUserId("");
+		UserEntity storedUserDetails = userRepository.findByUserId(userId);
+		
+		boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
+		assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
+	}
+	
+	@Test
+	final void testFindUserEntityByUserId() {
+		
+		UserEntity userEntity = userRepository.findUserEntityByUserId(userId);
+		
+		assertNotNull(userEntity);
+		assertTrue(userEntity.getUserId().equals(userId));
+		
+	}
+	
+	@Test
+	final void testGetUserEntityFullNameById() {
+		
+		List<Object[]> records = userRepository.getUserEntityFullNameById(userId);
+		
+		assertNotNull(records);
+		assertTrue(records.size() == 1);
+		
+		Object[] userDetails = records.get(0);
+		
+		String firstName = String.valueOf(userDetails[0]);
+		String lastName = String.valueOf(userDetails[1]);
+		assertNotNull(firstName);
+		assertNotNull(lastName);
+	}
+	
+	@Test
+	final void testUpdateUserEntityEmailVerificationStatus() {
+		boolean newEmailVerificationStatus = false;
+		userRepository.updateUserEntityEmailVerificationStatus(newEmailVerificationStatus, userId);
+		
+		UserEntity storedUserDetails = userRepository.findByUserId(userId);
 		
 		boolean storedEmailVerificationStatus = storedUserDetails.getEmailVerificationStatus();
 		assertTrue(storedEmailVerificationStatus == newEmailVerificationStatus);
@@ -113,7 +151,7 @@ class UserRepositoryTest {
 		UserEntity userEntity = new UserEntity();
 		userEntity.setFirstName("Bruno");
 		userEntity.setLastName("Vieira");
-		userEntity.setUserId("userId1234");
+		userEntity.setUserId(userId);
 		userEntity.setEncryptedPassword("encryptedxxx");
 		userEntity.setEmail("test@test.com");
 		userEntity.setEmailVerificationStatus(true);
@@ -123,7 +161,7 @@ class UserRepositoryTest {
 		addressEntity.setAddressId("addressId1234");
 		addressEntity.setCity("Lisbon");
 		addressEntity.setCountry("Portugal");
-		addressEntity.setPostalCode("postal-code");
+		addressEntity.setPostalCode("2740-105");
 		addressEntity.setStreetName("Street Name Number door");
 		
 		List<AddressEntity> addresses = new ArrayList<>();
@@ -135,17 +173,17 @@ class UserRepositoryTest {
 		UserEntity userEntity2 = new UserEntity();
 		userEntity2.setFirstName("Bruno");
 		userEntity2.setLastName("Vieira");
-		userEntity2.setUserId("userId4321");
+		userEntity2.setUserId("4321");
 		userEntity2.setEncryptedPassword("encryptedxxx");
 		userEntity2.setEmail("test1@test.com");
 		userEntity2.setEmailVerificationStatus(true);
 		
 		AddressEntity addressEntity2 = new AddressEntity();
 		addressEntity2.setType("shipping");
-		addressEntity2.setAddressId("addressId4321");
+		addressEntity2.setAddressId("43215");
 		addressEntity2.setCity("Lisbon");
 		addressEntity2.setCountry("Portugal");
-		addressEntity2.setPostalCode("postal-code");
+		addressEntity2.setPostalCode("2740-105");
 		addressEntity2.setStreetName("Street Name Number door");
 		
 		List<AddressEntity> addresses2 = new ArrayList<>();
