@@ -27,6 +27,12 @@ public class AuthorityEntity implements Serializable {
 	@ManyToMany(mappedBy = "authorities")
 	private Collection<RoleEntity> roles;
 
+	public AuthorityEntity() {}
+	
+	public AuthorityEntity(String name) {
+		this.name = name;
+	}
+
 	public long getId() {
 		return id;
 	}
