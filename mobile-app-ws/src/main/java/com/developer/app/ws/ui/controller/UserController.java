@@ -37,6 +37,7 @@ import com.developer.app.ws.ui.model.response.UserRest;
 
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 
 @RestController
 @RequestMapping("users") // http://localhost:8080/users
@@ -50,6 +51,8 @@ public class UserController {
 	AddressService addressService;
 	
 
+	@ApiOperation(value = "The Get User Details Web Service Endpoint", 
+			notes = "${userController.GetUser.ApiOperation.Notes}")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
 	})
