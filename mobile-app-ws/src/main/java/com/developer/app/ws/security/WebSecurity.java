@@ -42,12 +42,14 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.permitAll()
 		.antMatchers(SecurityConstants.H2_CONSOLE)
 		.permitAll()
+		.antMatchers("/v2/api-docs", "/v3/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+		.permitAll()
 		.anyRequest().authenticated()
 		.and().addFilter(new AuthenticationFilter(authenticationManager()))
 		.addFilter(new AuthorizationFilter(authenticationManager()))
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		
+
 	}
 	
 	@Override
