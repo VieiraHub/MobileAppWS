@@ -35,6 +35,9 @@ import com.developer.app.ws.ui.model.response.RequestOperationName;
 import com.developer.app.ws.ui.model.response.RequestOperationStatus;
 import com.developer.app.ws.ui.model.response.UserRest;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+
 @RestController
 @RequestMapping("users") // http://localhost:8080/users
 //@CrossOrigin("*") // * PERMISSION TO ALL  IF ("http://localhost:8084") SPECIFIED PERMISSION
@@ -47,6 +50,9 @@ public class UserController {
 	AddressService addressService;
 	
 
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@GetMapping(path = "/{id}", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -57,7 +63,9 @@ public class UserController {
 		return returnValue;
 	}
 	
-
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@PostMapping(
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -72,6 +80,9 @@ public class UserController {
 		return returnValue;
 	}
 
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@PutMapping(path = "/{id}", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
@@ -82,6 +93,9 @@ public class UserController {
 		return returnValue;
 	}
 
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@DeleteMapping(path = "/{id}",
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public OperationStatusModel deleteUser(@PathVariable String id) {
@@ -92,6 +106,9 @@ public class UserController {
 		return returnValue;
 	}
 
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@GetMapping(produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "limit", defaultValue = "10") int limit) {
@@ -112,6 +129,9 @@ public class UserController {
 	}
 
 	// http://localhost:8080/mobile-app-ws/users/{id}/addresses
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@GetMapping(path = "/{id}/addresses", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public List<AddressesRest> getUserAddresses(@PathVariable String id) {
@@ -127,6 +147,9 @@ public class UserController {
 		return returnValue;
 	}
 	
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@GetMapping(path = "/{userId}/addresses/{addressId}", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
 	public AddressesRest getUserAddress(@PathVariable String userId, @PathVariable String addressId) {
@@ -167,6 +190,9 @@ public class UserController {
 	
 	
 	// http://localhost:8080/mobile-app-ws/users/password-reset-request
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
+	})
 	@PostMapping(path = "/password-reset-request", 
 			produces = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE },
 			consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE })
