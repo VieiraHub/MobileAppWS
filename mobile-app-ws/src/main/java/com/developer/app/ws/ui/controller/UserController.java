@@ -96,9 +96,9 @@ public class UserController {
 		UserRest returnValue = new ModelMapper().map(updatedUser, UserRest.class);
 		return returnValue;
 	}
-
-	//@Secured("ROLE_ADMIN")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('ADMIN') or #id == principal.userId")
+//	@PreAuthorize("hasAuthority('DELETE_AUTHORITY')")
+//	@Secured("ROLE_ADMIN")
 	@ApiImplicitParams({
 		@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}", paramType = "header")
 	})

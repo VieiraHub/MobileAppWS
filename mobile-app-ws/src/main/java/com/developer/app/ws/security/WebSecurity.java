@@ -55,7 +55,6 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
 		.sessionManagement()
 		.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-		
 
 	}
 	
